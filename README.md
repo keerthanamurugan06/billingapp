@@ -60,7 +60,7 @@ Deployed using Vercel for live demo👩‍💻 Author
 
 Keerthana M
 
-GitHub: https://github.com/keerthananmurugana06
+GitHub: https://github.com/keerthanamurugan06
 ---
 📄 License
 
