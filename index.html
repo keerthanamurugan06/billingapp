@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Billing System</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #6b5b95, #feb236);
+    color: #0b0c10;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    min-height: 100vh;
+  }
+
+  .app {
+    max-width: 720px;
+    width: 100%;
+    background: linear-gradient(145deg, #f7d794, #f1a9a0);
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  }
+
+  h1 {
+    margin: 0 0 15px;
+    font-size: 28px;
+    color: #2d3436;
+    text-align: center;
+  }
+
+  form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  input, button {
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    font-size: 15px;
+  }
+
+  input {
+    flex: 1 1 150px;
+    border: 2px solid #dff9fb;
+    background: #ffffffcc;
+    color: #2d3436;
+  }
+
+  button {
+    flex: 1 1 120px;
+    background: #ff7675;
+    color: #fff;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+  }
+
+  button:hover {
+    background: #d63031;
+  }
+
+  /* Refresh button */
+  #refreshBtn {
+    background:#00b894; 
+    color:white; 
+    margin-bottom:10px; 
+    width:100%; 
+    padding:10px; 
+    border-radius:10px; 
+    font-weight:bold; 
+    cursor:pointer;
+  }
+
+  #refreshBtn:hover {
+    background:#019875;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  th, td {
+    padding: 12px;
+    text-align: left;
+  }
+
+  th {
+    background: #74b9ff;
+    color: #fff;
+  }
+
+  td {
+    background: #dfe6e9cc;
+    color: #2d3436;
+  }
+
+  .total {
+    margin-top: 15px;
+    font-weight: bold;
+    font-size: 20px;
+    text-align: right;
+    color: #2d3436;
+  }
+
+</style>
+</head>
+<body>
+<div class="app">
+  <h1>Billing System </h1>
+  
+  <form id="itemForm">
+    <input type="text" id="itemName" placeholder="Item Name" required>
+    <input type="number" id="itemQty" placeholder="Quantity" min="1" required>
+    <input type="number" id="itemPrice" placeholder="Price per unit" min="0" step="0.01" required>
+    <button type="submit">Add Item</button>
+  </form>
+
+  <button type="button" id="refreshBtn">Refresh / New Bill 🔄</button>
+
+  <table id="billTable">
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Qty</th>
+        <th>Price/unit</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <div class="total" id="totalAmount">Total: ₹0.00</div>
+</div>
+
+<script>
+const itemForm = document.getElementById('itemForm');
+const billTableBody = document.querySelector('#billTable tbody');
+const totalAmountEl = document.getElementById('totalAmount');
+const refreshBtn = document.getElementById('refreshBtn');
+
+let billItems = JSON.parse(localStorage.getItem('shop_bill') || '[]');
+
+function saveBill() {
+  localStorage.setItem('shop_bill', JSON.stringify(billItems));
+  renderBill();
+}
+
+function renderBill() {
+  billTableBody.innerHTML = '';
+  let total = 0;
+  billItems.forEach((item, i)=>{
+    const row = document.createElement('tr');
+
+    const itemTotal = item.qty * item.price;
+    total += itemTotal;
+
+    row.innerHTML = `
+      <td>${item.name}</td>
+      <td>${item.qty}</td>
+      <td>₹${item.price.toFixed(2)}</td>
+      <td>₹${itemTotal.toFixed(2)}</td>
+    `;
+    billTableBody.appendChild(row);
+  });
+  totalAmountEl.textContent = `Total: ₹${total.toFixed(2)}`;
+}
+
+// Add item
+itemForm.addEventListener('submit', e=>{
+  e.preventDefault();
+  const name = document.getElementById('itemName').value.trim();
+  const qty = parseInt(document.getElementById('itemQty').value);
+  const price = parseFloat(document.getElementById('itemPrice').value);
+
+  if(!name || qty <=0 || price < 0) return;
+
+  billItems.push({name, qty, price});
+  document.getElementById('itemName').value = '';
+  document.getElementById('itemQty').value = '';
+  document.getElementById('itemPrice').value = '';
+
+  saveBill();
+});
+
+// Refresh / new bill
+refreshBtn.addEventListener('click', ()=>{
+  if(confirm("Are you sure you want to clear the bill?")) {
+    billItems = [];
+    saveBill();
+  }
+});
+
+// Initial render
+renderBill();
+</script>
+</body>
+</html>
