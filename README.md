@@ -59,6 +59,7 @@ Deployed using GitHub Pages for static hosting
 Deployed using Vercel for live demo👩‍💻 Author
 
 Keerthana M
+
 GitHub: https://github.com/keerthananmurugana06
 ---
 📄 License
