@@ -11,7 +11,7 @@ This project helps users add items, calculate totals, and view the final bill th
   https://billingapp-three.vercel.app
 
 - **GitHub Pages Live Site:**  
-  https://keerthananmurugana06.github.io/billingapp/
+  https://keerthanamurugan06.github.io/billingapp/
 
 ---
 
