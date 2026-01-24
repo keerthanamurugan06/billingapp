@@ -129,13 +129,15 @@
 
   <table id="billTable">
     <thead>
-      <tr>
-        <th>Item</th>
-        <th>Qty</th>
-        <th>Price/unit</th>
-        <th>Total</th>
-      </tr>
-    </thead>
+  <tr>
+    <th>Item</th>
+    <th>Qty</th>
+    <th>Price/unit</th>
+    <th>Total</th>
+    <th>Action</th>
+  </tr>
+</thead>
+
     <tbody></tbody>
   </table>
 
@@ -153,12 +155,13 @@ let billItems = JSON.parse(localStorage.getItem('shop_bill') || '[]');
 function saveBill() {
   localStorage.setItem('shop_bill', JSON.stringify(billItems));
   renderBill();
-}
 
+}
 function renderBill() {
   billTableBody.innerHTML = '';
   let total = 0;
-  billItems.forEach((item, i)=>{
+
+  billItems.forEach((item, i) => {
     const row = document.createElement('tr');
 
     const itemTotal = item.qty * item.price;
@@ -169,12 +172,22 @@ function renderBill() {
       <td>${item.qty}</td>
       <td>₹${item.price.toFixed(2)}</td>
       <td>₹${itemTotal.toFixed(2)}</td>
+      <td>
+        <button onclick="removeItem(${i})"
+          style="background:#d63031;color:white;border:none;
+                 padding:6px 10px;border-radius:6px;cursor:pointer;">
+          Remove
+        </button>
+      </td>
     `;
+
     billTableBody.appendChild(row);
   });
+
   totalAmountEl.textContent = `Total: ₹${total.toFixed(2)}`;
 }
 
+  
 // Add item
 itemForm.addEventListener('submit', e=>{
   e.preventDefault();
@@ -199,9 +212,12 @@ refreshBtn.addEventListener('click', ()=>{
     saveBill();
   }
 });
+function removeItem(index) {
+  billItems.splice(index, 1);
+  saveBill();
+}
 
-// Initial render
-renderBill();
+
 </script>
 </body>
 </html>
